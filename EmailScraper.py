@@ -1,25 +1,65 @@
 # Hugo Humble
 # 2024-07-28
-# Version 1.0
+# Version 1.1
 
-from bs4 import BeautifulSoup
-from selenium import webdriver
+
+
+    ##################
+    # ATT GÖRA LISTA #
+    ##################
+    # 
+    # [] Skapa fler popup-rutor för "informativ" användning
+    #
+    # [] Förenkla kod struktur med definerade funktioner istället
+    #
+    # [] Sortera email i två grupper, Guld och Silver-förmåner
+    #
+    #
+    #
+
+###################
+# Libs to install #
+###################
+
+# pip install beautifulsoup4
+from bs4 import BeautifulSoup 
+
+# pip install selenium
+from selenium import webdriver 
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.edge.service import Service
+
+#pip install webdriver-manager
 from webdriver_manager.microsoft import EdgeChromiumDriverManager
+
 import time
 import csv as csv
 import easygui as eg
 
-def start_up():
+#############
+# Functions #
+#############
+
+def login_sequence():
+
+    eg.exceptionbox("Make sure that you enter your login information correct, no \"try/catch\" has been implemented for incorrect login as of yet","Crucial message for End-User")
     
     username = ""
     password = ""
+
+    driver = webdriver.Edge(service=Service(EdgeChromiumDriverManager().install()))
+    
+    driver.get("https://personal.trappan.nu/login.php")
+
+    username_field = driver.find_element(By.NAME, "user_name")
+    password_field = driver.find_element(By.NAME, "password")
     
     while(True):
         username = eg.enterbox("Enter username: ", "Login")
-        password = eg.passwordbox("Enter password: ", "Login")   
+        username_field.send_keys(username)
+        password = eg.passwordbox("Enter password: ", "Login")  
+        password_field.send_keys(password) 
         if username == "":
             eg.exceptionbox("You didn't enter a username, please try again.","Failed to enter username")
             continue
@@ -27,70 +67,37 @@ def start_up():
             eg.exceptionbox("You didn't enter a password, please try again.","Failed to enter password")
             continue
         else:
-            break
+            # add case if login fails
+            # try:
+                login_button = driver.find_element(By.NAME, "log_in")
+                login_button.click()
 
-    return username, password 
+                
+            
+            # finally:
+                break
 
-
-
-
-
-
-
-
-
-# Starta en webbläsarsession med Edge
-driver = webdriver.Edge(service=Service(EdgeChromiumDriverManager().install()))
-
+    return username, password, driver
 
 try:
-
-   ##################
-   # ATT GÖRA LISTA #
-   ##################
-   # 
-   # [] Skapa fler popup-rutor för simpel användning
-   #
-   # [] Förenkla kod struktur med definerade funktioner istället
-   #
-
-
-
-
-
-
-
 
     ##################
     # Login Sequence #
     ##################
-    # Gå till inloggningssidan
-    driver.get("https://personal.trappan.nu/login.php")
+    
+    # print("Before fetch_email()") # debugging
 
-    # Hitta och fyll i användarnamn och lösenord
-    username_field = driver.find_element(By.NAME, "user_name")
-    password_field = driver.find_element(By.NAME, "password")
+    username, password, driver = login_sequence()
 
-    # username = eg.enterbox("Användarnamn: ")
-    # password = eg.passwordbox("Lösenord: ")
-
-    username, password = start_up()
-
-    username_field.send_keys(username)
-    password_field.send_keys(password)
-
-    # Klicka på inloggningsknappen
-    login_button = driver.find_element(By.NAME, "log_in")
-    login_button.click()
-
-    # Vänta tills du är inloggad
+    # Ensure login success
     time.sleep(1)
+
+    # print("After fetch_email()") # debugging
 
     #####################
     # Benefits Sequence #
     #####################
 
-    # Gå till förmånssidan
     # driver.get("https://personal.trappan.nu/index.php?page=periodBenefits&period=105")
     driver.get("https://personal.trappan.nu/index.php?page=periodBenefits&period=106")
 
@@ -108,7 +115,7 @@ try:
     base_url = "https://personal.trappan.nu/index.php"
     hrefs = [base_url + a.get('href') for a in a_tags]
 
-    print(hrefs) # for debugging
+    # print(hrefs) # for debugging
 
     ####################
     # Email Extraction #
