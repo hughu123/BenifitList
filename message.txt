@@ -1,0 +1,8 @@
+Observera!!!
+
+Programmet har fortfarande en del saker som kommer implementeras och är i flera delar ostabil. 
+Se till att ange korrekta uppgifter vid inloggnings och andra diverse promter.
+
+Tack på förhand!
+
+// Hugo 
