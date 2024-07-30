@@ -16,7 +16,7 @@
     # [] Skapa en csv fil med mailadresserna
     #       [] Välja att skapa listor med olika filter (som guld och silver separat)
     #
-    # []  
+    # [] 
     #
 
 ###################
@@ -41,22 +41,24 @@ import csv as csv
 # pip install easygui
 import easygui as eg
 
+from config import myUsername, myPassword
+
 
 
 #############
 # Functions #
 #############
 
-def login_sequence():
+def login_sequence(mydriver):
     message = load_text()
     # print(message) # debugging
     eg.exceptionbox(message,"Before using the program")
 
-    driver = webdriver.Edge(service=Service(EdgeChromiumDriverManager().install()))
+    # driver = webdriver.Edge(service=Service(EdgeChromiumDriverManager().install()))
     
-    login_test(driver)
+    login_test(mydriver)
 
-    return driver
+    # return driver
 
 def load_text():
     text_file = ""
@@ -79,11 +81,14 @@ def login_test(driver):
         # Hitta fält
         username_field = driver.find_element(By.NAME, "user_name")
         password_field = driver.find_element(By.NAME, "password")
-        # Försök logga in på hemsidan med angivna uppgifter
-        username = eg.enterbox("Enter username: ", "Login")
-        username_field.send_keys(username)
-        password = eg.passwordbox("Enter password: ", "Login")  
-        password_field.send_keys(password)
+
+        # # Försök logga in på hemsidan med angivna uppgifter
+        # username = eg.enterbox("Enter username: ", "Login")
+        # username_field.send_keys(username)
+        # password = eg.passwordbox("Enter password: ", "Login")  
+        # password_field.send_keys(password)
+        username_field.send_keys(myUsername)
+        password_field.send_keys(myPassword)
 
         login_button = driver.find_element(By.NAME, "log_in")
         login_button.click()
@@ -98,7 +103,7 @@ def login_test(driver):
     print("login_test() ran successfully") # debugging
 
     
-
+ 
 
 
 try:
@@ -107,25 +112,40 @@ try:
     # Login Sequence #
     ##################
 
-    driver = login_sequence()
+    ## Starta webdriver
+    driver = webdriver.Edge(service=Service(EdgeChromiumDriverManager().install()))
+
+    login_sequence(driver)
 
     #####################
     # Benefits Sequence #
     #####################
 
+
     # driver.get("https://personal.trappan.nu/index.php?page=periodBenefits&period=105")
     driver.get("https://personal.trappan.nu/index.php?page=periodBenefits&period=106")
 
     # Hämtar sidans källkod
-    soup = BeautifulSoup(driver.page_source, "html.parser")
+    soup = BeautifulSoup(driver.page_source,"html5lib")
+
+    # print("soup.text")
+    # print(soup.text)
+
+    # # for debugging
+    # text_file = open(r"benefit_page.txt", "w")
+    # text_file.write(soup.text)
+    # text_file.close()
     
-    # Filtrerar personalens url till inviduella profiler
+    
+    # Email extrahering och text manipulering
     tbody = soup.find("tbody")
+    print("tbody")
+    print(tbody.getText(" \n", True))
     a_tags = tbody.find_all('a')
     base_url = "https://personal.trappan.nu/index.php"
     hrefs = [base_url + a.get('href') for a in a_tags]
 
-    # print(hrefs) # for debugging
+    print(hrefs) # for debugging
 
     ####################
     # Email Extraction #
