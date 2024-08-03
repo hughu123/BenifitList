@@ -41,6 +41,8 @@ import csv as csv
 # pip install easygui
 import easygui as eg
 
+# from config import myUsername, myPassword
+
 # Test
 from itertools import zip_longest
 
@@ -123,13 +125,13 @@ try:
     ###########
     ### Add state that checks the entered website of being a correct one
     ###########
-
+    
     benifit_url = eg.enterbox("Enter the URL of the benefit you want to calculate\nHeres an example of an URL: \n\"https://personal.trappan.nu/index.php?page=periodBenefits&period=105\" ","Please enter the URL of the benefit page")
     driver.get(benifit_url)
     # driver.get("https://personal.trappan.nu/index.php?page=periodBenefits&period=106")
 
     # Hämtar sidans källkod
-    soup = BeautifulSoup(driver.page_source,"html5lib")
+    soup = BeautifulSoup(driver.page_source)
     
     # Email extrahering och text manipulering
     tbody = soup.find("tbody")

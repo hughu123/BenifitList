@@ -1,3 +1,4 @@
 config.py
 test.csv
 __pycache__/
+.venv/
