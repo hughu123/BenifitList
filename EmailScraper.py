@@ -1,6 +1,6 @@
 # Hugo Humble
-# 2024-07-30
-# Version 1.2
+# 2024-08-03
+# Version 1.3
 
 
     ##################
@@ -11,7 +11,7 @@
     #
     # [50%] Förenkla kod struktur med definerade funktioner istället
     #
-    # [] Sortera email i två grupper, Guld och Silver-förmåner
+    # [100%] Sortera email i två grupper, Guld och Silver-förmåner
     #
     # [] Skapa en csv fil med mailadresserna
     #       [] Välja att skapa listor med olika filter (som guld och silver separat)
@@ -43,6 +43,9 @@ import easygui as eg
 
 from config import myUsername, myPassword
 
+# Test
+from itertools import zip_longest
+
 
 
 #############
@@ -52,7 +55,7 @@ from config import myUsername, myPassword
 def login_sequence(mydriver):
     message = load_text()
     # print(message) # debugging
-    eg.exceptionbox(message,"Before using the program")
+    # eg.exceptionbox(message,"Before using the program") # message for user
 
     # driver = webdriver.Edge(service=Service(EdgeChromiumDriverManager().install()))
     
@@ -102,7 +105,14 @@ def login_test(driver):
              break
     print("login_test() ran successfully") # debugging
 
-    
+def csvMaker():
+    benefits = []
+    titel_namn = ['Namn','Poäng','Profil','Email']
+
+
+
+
+    return benefits
  
 
 
@@ -122,8 +132,8 @@ try:
     #####################
 
 
-    # driver.get("https://personal.trappan.nu/index.php?page=periodBenefits&period=105")
-    driver.get("https://personal.trappan.nu/index.php?page=periodBenefits&period=106")
+    driver.get("https://personal.trappan.nu/index.php?page=periodBenefits&period=105")
+    # driver.get("https://personal.trappan.nu/index.php?page=periodBenefits&period=106")
 
     # Hämtar sidans källkod
     soup = BeautifulSoup(driver.page_source,"html5lib")
@@ -139,13 +149,43 @@ try:
     
     # Email extrahering och text manipulering
     tbody = soup.find("tbody")
-    print("tbody")
-    print(tbody.getText(" \n", True))
+    # print("tbody")
+    names = []
+    benifits = []
+
+    # personal = tbody.getText("\n",True)
+    personal = tbody.getText("\n",True)
+    lines = personal.splitlines()
+    # print('personal')
+    # print(personal)
+    # print('lines')
+    # print(lines)
+    for item in range(0,len(lines),2):
+        name = lines[item]
+        benifit = lines[item + 1]
+
+        names.append(name)
+        benifits.append(benifit)
+
+
+
+    # print('names')
+    # print(names)
+    # print('benifits')
+    # print(benifits)
+    
+    # print(tbody.getText("\n",True))
+    
+
+    
+
+
+
     a_tags = tbody.find_all('a')
     base_url = "https://personal.trappan.nu/index.php"
     hrefs = [base_url + a.get('href') for a in a_tags]
 
-    print(hrefs) # for debugging
+    # print(hrefs) # for debugging
 
     ####################
     # Email Extraction #
@@ -158,7 +198,47 @@ try:
         email = driver.find_element(By.XPATH,'//*[@id="content"]/div[1]/div[2]/div[1]/div/div[2]/table/tbody/tr[1]/td[2]').text
         list_of_emails.append(email)
         
-    print(list_of_emails) # Sorterade i ingående ordning från den genererade förmånslistan på portalen
+    # print(list_of_emails) # Sorterade i ingående ordning från den genererade förmånslistan på portalen
+    
+    # print(list_of_emails)
+
+    # Benifit checker
+
+    # print('Benifit checker')
+    tiers = []
+    for status in benifits:
+        if status == '1x + 0x' or status == '0x + 1x':
+            tier = 'Silver'
+            tiers.append(tier)
+
+        else:
+            tier = 'Guld'
+            tiers.append(tier)
+
+    # print(tiers)
+
+    
+    if len(names) == len(hrefs) and len(benifits) == len(hrefs) and len(list_of_emails) == len(hrefs) and len(tiers) == len(hrefs): 
+        print('All lists contain an equal amount, OK')
+        
+        with open('test.csv', mode='w', newline='', encoding='utf-8') as csv_file:
+            writer = csv.writer(csv_file)
+    
+            # Write the headers
+            writer.writerow(["Name", "Poäng", "Email", "Förmåner"])
+            
+            # Write the data rows
+            for n, p, e, f in zip(names, benifits, list_of_emails, tiers):
+                writer.writerow([n, p, e, f])
+            csv_file.close()
+
+    else:
+        print('Issues with lists being different sizes, ERROR')
+
+    # print(len(names))
+    # print(len(benifits))
+    # print(len(list_of_emails))
+    # print(len(tiers))
 
 
 finally:
