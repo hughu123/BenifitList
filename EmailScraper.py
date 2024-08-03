@@ -131,7 +131,7 @@ try:
     # driver.get("https://personal.trappan.nu/index.php?page=periodBenefits&period=106")
 
     # Hämtar sidans källkod
-    soup = BeautifulSoup(driver.page_source,"html.parser")
+    soup = BeautifulSoup(driver.page_source,features="html.parser")
     
     # Email extrahering och text manipulering
     tbody = soup.find("tbody")
