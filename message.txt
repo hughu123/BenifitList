@@ -1,8 +1,8 @@
-Observera!!!
+Please be aware!!!
 
-Programmet har fortfarande en del saker som kommer implementeras och är i flera delar ostabil. 
-Se till att ange korrekta uppgifter vid inloggnings och andra diverse promter.
+This program is still in its early stages. Future features will be implemented and unstable parts of the program will be fixed (in the foreseeable future lol)
+Make sure you enter the correct credentials when login and other promts appear.
 
-Tack på förhand!
+Thank you for your understanding!
 
-// Hugo 
+// H. Humble

@@ -13,10 +13,10 @@
     #
     # [100%] Sortera email i två grupper, Guld och Silver-förmåner
     #
-    # [] Skapa en csv fil med mailadresserna
-    #       [] Välja att skapa listor med olika filter (som guld och silver separat)
+    # [100%] Skapa en csv fil med mailadresserna
+    #       [???] Välja att skapa listor med olika filter (som guld och silver separat)
     #
-    # [] 
+    # 
     #
 
 ###################
@@ -55,9 +55,7 @@ from itertools import zip_longest
 def login_sequence(mydriver):
     message = load_text()
     # print(message) # debugging
-    # eg.exceptionbox(message,"Before using the program") # message for user
-
-    # driver = webdriver.Edge(service=Service(EdgeChromiumDriverManager().install()))
+    eg.exceptionbox(message,"Before using the program") # message for user
     
     login_test(mydriver)
 
@@ -85,13 +83,11 @@ def login_test(driver):
         username_field = driver.find_element(By.NAME, "user_name")
         password_field = driver.find_element(By.NAME, "password")
 
-        # # Försök logga in på hemsidan med angivna uppgifter
-        # username = eg.enterbox("Enter username: ", "Login")
-        # username_field.send_keys(username)
-        # password = eg.passwordbox("Enter password: ", "Login")  
-        # password_field.send_keys(password)
-        username_field.send_keys(myUsername)
-        password_field.send_keys(myPassword)
+        # Försök logga in på hemsidan med angivna uppgifter
+        username = eg.enterbox("Enter username: ", "Login")
+        username_field.send_keys(username)
+        password = eg.passwordbox("Enter password: ", "Login")  
+        password_field.send_keys(password)
 
         login_button = driver.find_element(By.NAME, "log_in")
         login_button.click()
@@ -105,16 +101,11 @@ def login_test(driver):
              break
     print("login_test() ran successfully") # debugging
 
-def csvMaker():
+def csvMaker(list): # WIP
     benefits = []
     titel_namn = ['Namn','Poäng','Profil','Email']
 
-
-
-
     return benefits
- 
-
 
 try:
 
@@ -131,55 +122,31 @@ try:
     # Benefits Sequence #
     #####################
 
-
-    driver.get("https://personal.trappan.nu/index.php?page=periodBenefits&period=105")
+    ###########
+    ### Add state that checks the entered website of being a correct one
+    ###########
+    
+    benifit_url = eg.enterbox("Enter the URL of the benefit you want to calculate\nHeres an example of an URL: \n\"https://personal.trappan.nu/index.php?page=periodBenefits&period=105\" ","Please enter the URL of the benefit page")
+    driver.get(benifit_url)
     # driver.get("https://personal.trappan.nu/index.php?page=periodBenefits&period=106")
 
     # Hämtar sidans källkod
     soup = BeautifulSoup(driver.page_source,"html5lib")
-
-    # print("soup.text")
-    # print(soup.text)
-
-    # # for debugging
-    # text_file = open(r"benefit_page.txt", "w")
-    # text_file.write(soup.text)
-    # text_file.close()
-    
     
     # Email extrahering och text manipulering
     tbody = soup.find("tbody")
-    # print("tbody")
     names = []
     benifits = []
 
-    # personal = tbody.getText("\n",True)
     personal = tbody.getText("\n",True)
     lines = personal.splitlines()
-    # print('personal')
-    # print(personal)
-    # print('lines')
-    # print(lines)
+
     for item in range(0,len(lines),2):
         name = lines[item]
         benifit = lines[item + 1]
 
         names.append(name)
         benifits.append(benifit)
-
-
-
-    # print('names')
-    # print(names)
-    # print('benifits')
-    # print(benifits)
-    
-    # print(tbody.getText("\n",True))
-    
-
-    
-
-
 
     a_tags = tbody.find_all('a')
     base_url = "https://personal.trappan.nu/index.php"
@@ -197,14 +164,8 @@ try:
         driver.get(profil)
         email = driver.find_element(By.XPATH,'//*[@id="content"]/div[1]/div[2]/div[1]/div/div[2]/table/tbody/tr[1]/td[2]').text
         list_of_emails.append(email)
-        
-    # print(list_of_emails) # Sorterade i ingående ordning från den genererade förmånslistan på portalen
     
-    # print(list_of_emails)
 
-    # Benifit checker
-
-    # print('Benifit checker')
     tiers = []
     for status in benifits:
         if status == '1x + 0x' or status == '0x + 1x':
@@ -215,10 +176,11 @@ try:
             tier = 'Guld'
             tiers.append(tier)
 
-    # print(tiers)
+    # print(tiers) # debugging
 
     
     if len(names) == len(hrefs) and len(benifits) == len(hrefs) and len(list_of_emails) == len(hrefs) and len(tiers) == len(hrefs): 
+        # wtf is this if statement smh...
         print('All lists contain an equal amount, OK')
         
         with open('test.csv', mode='w', newline='', encoding='utf-8') as csv_file:
@@ -235,10 +197,6 @@ try:
     else:
         print('Issues with lists being different sizes, ERROR')
 
-    # print(len(names))
-    # print(len(benifits))
-    # print(len(list_of_emails))
-    # print(len(tiers))
 
 
 finally:
