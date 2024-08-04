@@ -184,10 +184,11 @@ try:
         print('All lists contain an equal amount, OK')
         
         with open('test.csv', mode='w', newline='', encoding='utf-8') as csv_file:
-            writer = csv.writer(csv_file)
+            writer = csv.writer(csv_file, delimiter=',')
     
             # Write the headers
             writer.writerow(["Name", "Poäng", "Email", "Förmåner"])
+            # writer.writerow("Name", "Poäng", "Email", "Förmåner")
             
             # Write the data rows
             for n, p, e, f in zip(names, benifits, list_of_emails, tiers):
