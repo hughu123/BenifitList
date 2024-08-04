@@ -40,4 +40,6 @@ Do these comands in order (you need Python on your pc tho)
 
 <code>.\.venv\Scripts\python.exe .\BenifitList.py</code>
 
+And if you're done you can deactivate the virutal enviorment with <code>.\.venv\Scripts\deactivate.bat</code>
+
 Done
