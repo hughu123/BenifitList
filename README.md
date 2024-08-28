@@ -24,6 +24,8 @@ Now there exists a new folder called <code>.venv</code>.
 
 After this you can now run the program with <code>.\.venv\Scripts\python.exe .\BenifitList.py</code>
 
+The program will generate a .csv-file in the folder that can easily be imported to excel for further manipulation if needed.
+
 ****TL;DR****
 
 Do these comands in order (you need Python on your pc tho)
