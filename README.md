@@ -20,7 +20,7 @@ Enter the newly cloned repo <code>cd BenifitList</code> and create the .venv env
 
 Now there exists a new folder called <code>.venv</code>.
 
-<code>.\.venv\Scripts\activate.bat</code> followed with <code>.\.venv\Scripts\pip.exe install /r .\requirements.txt</code>
+<code>.\.venv\Scripts\activate.bat</code> followed with <code>.\.venv\Scripts\pip.exe install -r .\requirements.txt</code>
 
 After this you can now run the program with <code>.\.venv\Scripts\python.exe .\BenifitList.py</code>
 
